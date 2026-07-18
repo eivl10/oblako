@@ -122,3 +122,11 @@ canvas {
 #dragged-word.hidden {
   display: none;
 }
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+  canvas {
+    width: 150vw; /* Искусственно увеличиваем канвас, чтобы слова в облаке стали крупнее */
+    max-width: none;
+  }
+}
