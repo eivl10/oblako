@@ -125,54 +125,78 @@ window.onload = function() {
     // Пасхалка с Масей
     let lastHeartSpawnTime = 0;
     
-    canvas.addEventListener('mousedown', function(e) {
+    function handleDown(x, y) {
       const tc = TagCanvas.tc['myCanvas'];
-      // В разных версиях TagCanvas активный тэг может быть напрямую в tc.active или внутри tc.active.tag
       const activeTag = tc && tc.active ? (tc.active.tag || tc.active) : null;
       
-      // Скрываем подсказку навсегда, если пользователь начал взаимодействовать
       hasInteracted = true;
       if (hintInterval) clearInterval(hintInterval);
       if (hint) hint.classList.remove('visible');
       
       if (activeTag && activeTag.a) {
         isDragging = true;
-        startX = e.clientX;
-        startY = e.clientY;
+        startX = x;
+        startY = y;
         currentX = startX;
         currentY = startY;
         dragStartTime = Date.now();
-        lastHeartSpawnTime = 0; // Сбрасываем таймер сердечек
+        lastHeartSpawnTime = 0;
         
-        // Ограничиваем максимальную скорость: быстрее в 2 раза чем было (было 0.0026, стало 0.0052)
         tc.maxSpeed = 0.0052;
         
-        // Подготавливаем вытянутое слово
         draggedWord.innerText = activeTag.a.innerText;
-        draggedWord.style.fontSize = '34px'; // Исходный базовый размер
+        draggedWord.style.fontSize = '34px';
         draggedWord.classList.remove('hidden');
         
         if (springAnim) cancelAnimationFrame(springAnim);
         if (dragAnim) cancelAnimationFrame(dragAnim);
-        dragLoop(); // Запускаем цикл дрожания
+        dragLoop();
       }
-    }, true); // Используем capture, чтобы перехватить событие до того, как его обработает сам canvas
+    }
+
+    canvas.addEventListener('mousedown', function(e) {
+      handleDown(e.clientX, e.clientY);
+    }, true);
     
-    window.addEventListener('mousemove', function(e) {
+    canvas.addEventListener('touchstart', function(e) {
+      // Ждем 1 кадр, чтобы TagCanvas успел обновить tc.active своими внутренними обработчиками
+      setTimeout(() => {
+        if (e.touches.length > 0) {
+          handleDown(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, 0);
+    }, { passive: true, capture: true });
+
+    function handleMove(x, y, e) {
       if (isDragging) {
-        currentX = e.clientX;
-        currentY = e.clientY;
-        // Вся логика перемещения, размера и дрожания теперь в dragLoop
+        currentX = x;
+        currentY = y;
+        // Отменяем скролл экрана телефона при вытягивании слова
+        if (e && e.cancelable) e.preventDefault();
       }
+    }
+
+    window.addEventListener('mousemove', function(e) {
+      handleMove(e.clientX, e.clientY, e);
     });
-    
-    window.addEventListener('mouseup', function() {
+
+    window.addEventListener('touchmove', function(e) {
+      if (isDragging && e.touches.length > 0) {
+        handleMove(e.touches[0].clientX, e.touches[0].clientY, e);
+      }
+    }, { passive: false });
+
+    function handleUp() {
       if (isDragging) {
         isDragging = false;
         if (dragAnim) cancelAnimationFrame(dragAnim);
-        snapBack(); // Запускаем возврат на пружине
+        snapBack();
       }
-    });
+    }
+
+    window.addEventListener('mouseup', handleUp);
+    window.addEventListener('touchend', handleUp);
+    window.addEventListener('touchcancel', handleUp);
     
     function dragLoop() {
       if (!isDragging) return;
