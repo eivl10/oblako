@@ -41,11 +41,15 @@ body {
 }
 
 #app {
-  width: 100%;
+  position: relative;
+  width: 100vw;
+  max-width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden; /* Обрезаем вылезающий канвас, чтобы не было белой полосы и скролла */
+  z-index: 1;
 }
 
 /* Всплывающая подсказка сверху по центру */
@@ -126,7 +130,7 @@ canvas {
 /* Мобильная адаптация */
 @media (max-width: 768px) {
   canvas {
-    width: 150vw; /* Искусственно увеличиваем канвас, чтобы слова в облаке стали крупнее */
+    width: 130vw; /* Сфера займет ~88% экрана, оставляя аккуратные отступы по краям */
     max-width: none;
   }
 }
