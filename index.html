@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/cloud_favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Данино облачко</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="aurora-bg"></div>
+    <div id="app">
+      <!-- Всплывающая подсказка по центру сверху -->
+      <div id="hint">Слова можно подёргать</div>
+      
+      <!-- Элемент самого слова, которое мы вытягиваем -->
+      <div id="dragged-word" class="hidden"></div>
+      
+      <div id="canvas-container">
+        <!-- Увеличим разрешение canvas для Retina-дисплеев, а в CSS ужмем -->
+        <canvas id="myCanvas" width="900" height="900">
+          <p>Ваш браузер не поддерживает Canvas.</p>
+        </canvas>
+      </div>
+      <div id="tags" style="display: none;">
+        <ul>
+          <!-- Тэги будут сгенерированы через JS -->
+        </ul>
+      </div>
+    </div>
+    <script src="/tagcanvas.min.js"></script>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
