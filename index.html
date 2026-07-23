@@ -7,7 +7,7 @@
     <title>Данино облачко</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:wght@600&family=Marck+Script&family=Montserrat:wght@600&family=Playfair+Display:ital,wght@0,600;1,600&family=Russo+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&family=Bad+Script&family=Bebas+Neue&family=Caveat:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Forum&family=Kelly+Slab&family=Lobster&family=Marck+Script&family=Montserrat:wght@600&family=Neucha&family=Oswald:wght@600&family=Pacifico&family=Playfair+Display:ital,wght@0,600;1,600&family=Press+Start+2P&family=Rubik:wght@600&family=Russo+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
@@ -31,17 +31,55 @@
         </ul>
       </div>
 
-      <!-- Интерактивная плашка выбора шрифтов -->
-      <div id="font-picker">
-        <span class="picker-label">Шрифт:</span>
-        <button class="font-btn active" data-font='"Bebas Neue", sans-serif'>Bebas Neue</button>
-        <button class="font-btn" data-font='"Montserrat", sans-serif'>Montserrat</button>
-        <button class="font-btn" data-font='"Playfair Display", serif'>Playfair</button>
-        <button class="font-btn" data-font='"Comfortaa", cursive'>Comfortaa</button>
-        <button class="font-btn" data-font='"Caveat", cursive'>Caveat</button>
-        <button class="font-btn" data-font='"Cormorant Garamond", serif'>Cormorant</button>
-        <button class="font-btn" data-font='"Russo One", sans-serif'>Russo One</button>
-        <button class="font-btn" data-font='"Marck Script", cursive'>Marck Script</button>
+      <!-- Скрытая панель управления (Ctrl + L) -->
+      <div id="settings-panel" class="hidden">
+        <div class="panel-header">
+          <span>⚙ Настройки облака (Ctrl + L)</span>
+          <button id="close-panel-btn">✕</button>
+        </div>
+        
+        <div class="panel-row">
+          <label for="font-select">Шрифт:</label>
+          <select id="font-select">
+            <option value='"Bebas Neue", sans-serif'>Bebas Neue</option>
+            <option value='"Montserrat", sans-serif'>Montserrat</option>
+            <option value='"Playfair Display", serif'>Playfair Display</option>
+            <option value='"Comfortaa", cursive'>Comfortaa</option>
+            <option value='"Caveat", cursive'>Caveat</option>
+            <option value='"Cormorant Garamond", serif'>Cormorant Garamond</option>
+            <option value='"Russo One", sans-serif'>Russo One</option>
+            <option value='"Marck Script", cursive'>Marck Script</option>
+            <option value='"Pacifico", cursive'>Pacifico</option>
+            <option value='"Amatic SC", cursive'>Amatic SC</option>
+            <option value='"Rubik", sans-serif'>Rubik</option>
+            <option value='"Oswald", sans-serif'>Oswald</option>
+            <option value='"Lobster", cursive'>Lobster</option>
+            <option value='"Kelly Slab", cursive'>Kelly Slab</option>
+            <option value='"Forum", serif'>Forum</option>
+            <option value='"Neucha", cursive'>Neucha</option>
+            <option value='"Bad Script", cursive'>Bad Script</option>
+            <option value='"Press Start 2P", cursive'>Press Start 2P</option>
+          </select>
+        </div>
+
+        <div class="panel-row">
+          <label>Форматирование:</label>
+          <div class="checkbox-group">
+            <label><input type="checkbox" id="chk-italic"> Курсив</label>
+            <label><input type="checkbox" id="chk-bold"> Жирный</label>
+            <label><input type="checkbox" id="chk-uppercase"> Все заглавные</label>
+          </div>
+        </div>
+
+        <div class="panel-row">
+          <label for="shadow-slider">Размытие тени: <span id="shadow-val">1px</span></label>
+          <input type="range" id="shadow-slider" min="0" max="15" step="1" value="1">
+        </div>
+
+        <div class="panel-row">
+          <label for="color-picker">Цвет слов:</label>
+          <input type="color" id="color-picker" value="#4B8BCC">
+        </div>
       </div>
     </div>
     <script src="/tagcanvas.min.js"></script>

@@ -58,27 +58,75 @@ window.onload = function() {
       wheelZoom: false        // Отключаем зум колесиком мыши
     });
     
-    // ЛОГИКА ВЫБОРА ШРИФТА
-    const fontBtns = document.querySelectorAll('.font-btn');
+    // ЛОГИКА ПАНЕЛИ НАСТРОЕК (Ctrl + L)
+    const settingsPanel = document.getElementById('settings-panel');
+    const closePanelBtn = document.getElementById('close-panel-btn');
+    const fontSelect = document.getElementById('font-select');
+    const chkItalic = document.getElementById('chk-italic');
+    const chkBold = document.getElementById('chk-bold');
+    const chkUppercase = document.getElementById('chk-uppercase');
+    const shadowSlider = document.getElementById('shadow-slider');
+    const shadowVal = document.getElementById('shadow-val');
+    const colorPicker = document.getElementById('color-picker');
     const draggedWordEl = document.getElementById('dragged-word');
-    
-    fontBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const selectedFont = e.currentTarget.getAttribute('data-font');
-        
-        fontBtns.forEach(b => b.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-        
-        if (draggedWordEl) {
-          draggedWordEl.style.fontFamily = selectedFont;
-        }
-        
-        if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
-          TagCanvas.tc['myCanvas'].textFont = selectedFont;
-          TagCanvas.Update('myCanvas');
-        }
-      });
+
+    // Переключение видимости панели по Ctrl+L / Cmd+L
+    window.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'l' || e.key === 'L' || e.key === 'д' || e.key === 'Д')) {
+        e.preventDefault();
+        settingsPanel.classList.toggle('hidden');
+      }
     });
+
+    if (closePanelBtn) {
+      closePanelBtn.addEventListener('click', () => {
+        settingsPanel.classList.add('hidden');
+      });
+    }
+
+    function applySettings() {
+      const font = fontSelect.value;
+      const isItalic = chkItalic.checked;
+      const isBold = chkBold.checked;
+      const isUpper = chkUppercase.checked;
+      const shadowBlur = parseInt(shadowSlider.value);
+      const color = colorPicker.value;
+
+      if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
+
+      if (draggedWordEl) {
+        draggedWordEl.style.fontFamily = font;
+        draggedWordEl.style.fontStyle = isItalic ? 'italic' : 'normal';
+        draggedWordEl.style.fontWeight = isBold ? 'bold' : 'normal';
+        draggedWordEl.style.textTransform = isUpper ? 'uppercase' : 'none';
+        draggedWordEl.style.color = color;
+        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur}px ${color}66` : 'none';
+      }
+
+      if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
+        const tc = TagCanvas.tc['myCanvas'];
+        tc.textFont = font;
+        tc.textColour = color;
+        tc.shadowBlur = shadowBlur;
+        tc.shadow = shadowBlur > 0 ? 'rgba(0,0,0,0.15)' : null;
+
+        const aElements = ul.querySelectorAll('a');
+        aElements.forEach(a => {
+          const original = a.getAttribute('data-original') || a.innerText;
+          if (!a.getAttribute('data-original')) a.setAttribute('data-original', original);
+          a.innerText = isUpper ? original.toUpperCase() : original;
+        });
+
+        TagCanvas.Reload('myCanvas');
+      }
+    }
+
+    if (fontSelect) fontSelect.addEventListener('change', applySettings);
+    if (chkItalic) chkItalic.addEventListener('change', applySettings);
+    if (chkBold) chkBold.addEventListener('change', applySettings);
+    if (chkUppercase) chkUppercase.addEventListener('change', applySettings);
+    if (shadowSlider) shadowSlider.addEventListener('input', applySettings);
+    if (colorPicker) colorPicker.addEventListener('input', applySettings);
     
     // ЛОГИКА ПОДСКАЗКИ
     const hint = document.getElementById('hint');
