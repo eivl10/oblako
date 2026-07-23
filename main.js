@@ -126,18 +126,20 @@ window.onload = function() {
           const curr = parseFloat(input.value);
           const newVal = Math.min(max, Math.max(min, curr + step));
           input.value = newVal;
-          debouncedApplySettings();
+          
+          // Обновляем только текстовые значения рядом со слайдерами мгновенно
+          if (targetId === 'shadow-slider' && shadowVal) shadowVal.innerText = newVal + 'px';
+          if (targetId === 'size-slider' && sizeVal) sizeVal.innerText = newVal + 'px';
+          if (targetId === 'speed-slider' && speedVal) speedVal.innerText = newVal;
+          if (targetId === 'depth-slider' && depthVal) depthVal.innerText = newVal;
+          if (targetId === 'bg-opacity-slider' && bgOpacityVal) bgOpacityVal.innerText = newVal + '%';
         }
       });
     });
 
-    let applyTimer = null;
-    function debouncedApplySettings() {
-      if (applyTimer) clearTimeout(applyTimer);
-      applyTimer = setTimeout(applySettings, 20);
-    }
+    const applyBtn = document.getElementById('apply-btn');
 
-    function applySettings() {
+    async function applySettings() {
       const font = fontSelect.value;
       const isItalic = chkItalic.checked;
       const isBold = chkBold.checked;
@@ -189,7 +191,14 @@ window.onload = function() {
         a.style.fontWeight = isBold ? 'bold' : 'normal';
       });
 
-      // 4. Перерисовываем TagCanvas с явным перерасчетом 3D глубины
+      // 4. Дожидаемся загрузки шрифта браузером, чтобы Canvas не отрисовал Arial!
+      try {
+        await document.fonts.load(`16px "${font}"`);
+      } catch (e) {
+        console.warn('Font load error:', e);
+      }
+
+      // 5. Перерисовываем TagCanvas с явным перерасчетом 3D глубины
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
         tc.textFont = `"${font}", sans-serif`;
@@ -205,6 +214,12 @@ window.onload = function() {
         tc.z2 = tc.z1 / tc.zoom;
 
         TagCanvas.Reload('myCanvas');
+      }
+
+      if (applyBtn) {
+        const oldText = applyBtn.innerText;
+        applyBtn.innerText = 'Применено! ✓';
+        setTimeout(() => applyBtn.innerText = oldText, 1500);
       }
     }
 
@@ -278,19 +293,14 @@ window.onload = function() {
       applySettings();
     }
 
-    if (fontSelect) fontSelect.addEventListener('change', debouncedApplySettings);
-    if (chkItalic) chkItalic.addEventListener('change', debouncedApplySettings);
-    if (chkBold) chkBold.addEventListener('change', debouncedApplySettings);
-    if (chkUppercase) chkUppercase.addEventListener('change', debouncedApplySettings);
-    if (sizeSlider) sizeSlider.addEventListener('input', debouncedApplySettings);
-    if (shadowSlider) shadowSlider.addEventListener('input', debouncedApplySettings);
-    if (speedSlider) speedSlider.addEventListener('input', debouncedApplySettings);
-    if (depthSlider) depthSlider.addEventListener('input', debouncedApplySettings);
-    if (colorPicker) colorPicker.addEventListener('input', debouncedApplySettings);
-    if (outlineColorPicker) outlineColorPicker.addEventListener('input', debouncedApplySettings);
-    if (shadowColorPicker) shadowColorPicker.addEventListener('input', debouncedApplySettings);
-    if (bgPresetSelect) bgPresetSelect.addEventListener('change', debouncedApplySettings);
-    if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', debouncedApplySettings);
+    // Обновление цифр при движении ползунков без перерисовки Canvas
+    if (sizeSlider) sizeSlider.addEventListener('input', (e) => { if(sizeVal) sizeVal.innerText = e.target.value + 'px'; });
+    if (shadowSlider) shadowSlider.addEventListener('input', (e) => { if(shadowVal) shadowVal.innerText = e.target.value + 'px'; });
+    if (speedSlider) speedSlider.addEventListener('input', (e) => { if(speedVal) speedVal.innerText = e.target.value; });
+    if (depthSlider) depthSlider.addEventListener('input', (e) => { if(depthVal) depthVal.innerText = e.target.value; });
+    if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', (e) => { if(bgOpacityVal) bgOpacityVal.innerText = e.target.value + '%'; });
+
+    if (applyBtn) applyBtn.addEventListener('click', applySettings);
     if (saveBtn) saveBtn.addEventListener('click', saveSettings);
     if (resetBtn) resetBtn.addEventListener('click', resetSettings);
 

@@ -75,6 +75,24 @@ body {
   animation: drift 20s infinite alternate ease-in-out;
 }
 
+/* Пресет: Космос */
+.aurora-bg.preset-space {
+  background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  animation: none;
+}
+
+/* Пресет: Горы */
+.aurora-bg.preset-mountains {
+  background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  animation: none;
+}
+
+/* Пресет: Море */
+.aurora-bg.preset-sea {
+  background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  animation: none;
+}
+
 @keyframes drift {
   0% { transform: scale(1) translate(0, 0); }
   50% { transform: scale(1.05) translate(1%, 2%); }
