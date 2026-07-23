@@ -103,6 +103,65 @@ canvas {
   white-space: nowrap;
 }
 
+/* Панель выбора шрифтов внизу экрана */
+#font-picker {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 30px;
+  box-shadow: 0 4px 20px rgba(75, 139, 204, 0.15);
+  z-index: 30;
+  max-width: 90vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+#font-picker::-webkit-scrollbar {
+  display: none;
+}
+
+.picker-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: #666;
+  white-space: nowrap;
+  margin-right: 4px;
+}
+
+.font-btn {
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(75, 139, 204, 0.2);
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.font-btn:hover {
+  background: #ffffff;
+  border-color: #4B8BCC;
+  color: #4B8BCC;
+  transform: translateY(-1px);
+}
+
+.font-btn.active {
+  background: #4B8BCC;
+  color: #ffffff;
+  border-color: #4B8BCC;
+  font-weight: 600;
+}
+
 /* Сердечки для пасхалки */
 .floating-heart {
   position: absolute;

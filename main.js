@@ -58,6 +58,28 @@ window.onload = function() {
       wheelZoom: false        // Отключаем зум колесиком мыши
     });
     
+    // ЛОГИКА ВЫБОРА ШРИФТА
+    const fontBtns = document.querySelectorAll('.font-btn');
+    const draggedWordEl = document.getElementById('dragged-word');
+    
+    fontBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const selectedFont = e.currentTarget.getAttribute('data-font');
+        
+        fontBtns.forEach(b => b.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        
+        if (draggedWordEl) {
+          draggedWordEl.style.fontFamily = selectedFont;
+        }
+        
+        if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
+          TagCanvas.tc['myCanvas'].textFont = selectedFont;
+          TagCanvas.Update('myCanvas');
+        }
+      });
+    });
+    
     // ЛОГИКА ПОДСКАЗКИ
     const hint = document.getElementById('hint');
     let hasInteracted = false;

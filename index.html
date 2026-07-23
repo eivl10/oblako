@@ -7,7 +7,7 @@
     <title>Данино облачко</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@600&family=Comfortaa:wght@600&family=Cormorant+Garamond:wght@600&family=Marck+Script&family=Montserrat:wght@600&family=Playfair+Display:ital,wght@0,600;1,600&family=Russo+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
@@ -29,6 +29,19 @@
         <ul>
           <!-- Тэги будут сгенерированы через JS -->
         </ul>
+      </div>
+
+      <!-- Интерактивная плашка выбора шрифтов -->
+      <div id="font-picker">
+        <span class="picker-label">Шрифт:</span>
+        <button class="font-btn active" data-font='"Bebas Neue", sans-serif'>Bebas Neue</button>
+        <button class="font-btn" data-font='"Montserrat", sans-serif'>Montserrat</button>
+        <button class="font-btn" data-font='"Playfair Display", serif'>Playfair</button>
+        <button class="font-btn" data-font='"Comfortaa", cursive'>Comfortaa</button>
+        <button class="font-btn" data-font='"Caveat", cursive'>Caveat</button>
+        <button class="font-btn" data-font='"Cormorant Garamond", serif'>Cormorant</button>
+        <button class="font-btn" data-font='"Russo One", sans-serif'>Russo One</button>
+        <button class="font-btn" data-font='"Marck Script", cursive'>Marck Script</button>
       </div>
     </div>
     <script src="/tagcanvas.min.js"></script>
