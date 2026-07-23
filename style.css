@@ -171,27 +171,27 @@ canvas {
   white-space: nowrap;
 }
 
-/* Скрытая комфортная панель управления (Ctrl+L) */
+/* Скрытая премиальная панель управления (Ctrl+L) */
 #settings-panel {
   position: fixed;
-  top: 18px;
-  right: 18px;
+  top: 20px;
+  right: 20px;
   left: auto;
   transform: none;
-  width: 285px;
+  width: 330px;
   max-width: 90vw;
   max-height: 85vh;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.14);
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.8);
   z-index: 100;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   font-family: 'Inter', system-ui, sans-serif;
   color: #333;
 }
@@ -205,18 +205,33 @@ canvas {
   justify-content: space-between;
   align-items: center;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 15px;
   color: #222;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  padding-bottom: 6px;
+  padding-bottom: 10px;
+}
+
+#close-panel-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #888;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+#close-panel-btn:hover {
+  color: #000;
+  background: rgba(0, 0, 0, 0.05);
 }
 
 .panel-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   overflow-y: auto;
-  padding-right: 2px;
+  padding-right: 4px;
 }
 
 .panel-body::-webkit-scrollbar {
@@ -230,8 +245,8 @@ canvas {
 .panel-row {
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  font-size: 11px;
+  gap: 4px;
+  font-size: 13px;
 }
 
 .panel-row.horizontal {
@@ -252,39 +267,51 @@ canvas {
 }
 
 .val-badge {
-  font-size: 10px;
+  font-size: 11px;
   color: #4B8BCC;
   font-weight: 600;
+  background: rgba(0,0,0,0.03);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 .panel-row select {
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
   border: 1px solid rgba(75, 139, 204, 0.3);
   background: #fff;
-  font-size: 12px;
+  font-size: 13px;
   color: #333;
   outline: none;
   cursor: pointer;
   width: 100%;
 }
 
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: normal;
+  color: #444;
+}
+
 .fmt-buttons {
   display: flex;
-  gap: 4px;
+  gap: 6px;
 }
 
 .fmt-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 24px;
+  width: 32px;
+  height: 28px;
   border-radius: 6px;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   transition: all 0.15s ease;
 }
 
@@ -301,19 +328,19 @@ canvas {
 .stepper {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 .step-btn {
-  width: 22px;
-  height: 22px;
-  min-width: 22px;
-  border-radius: 5px;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  border-radius: 6px;
   background: rgba(75, 139, 204, 0.1);
   border: 1px solid rgba(75, 139, 204, 0.25);
   color: #4B8BCC;
   font-weight: bold;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -342,16 +369,16 @@ canvas {
 .color-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .color-swatch {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   border: 1px solid rgba(0, 0, 0, 0.15);
   cursor: pointer;
   padding: 0;
@@ -364,14 +391,14 @@ canvas {
 }
 .color-swatch::-webkit-color-swatch {
   border: none;
-  border-radius: 5px;
+  border-radius: 7px;
 }
 
 .panel-actions {
   display: flex;
-  gap: 6px;
-  margin-top: 4px;
-  padding-top: 8px;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 12px;
   border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -380,9 +407,9 @@ canvas {
   background: #4B8BCC;
   color: #fff;
   border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;

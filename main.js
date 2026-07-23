@@ -62,6 +62,13 @@ window.onload = function() {
     const settingsPanel = document.getElementById('settings-panel');
     const closePanelBtn = document.getElementById('close-panel-btn');
     const fontSelect = document.getElementById('font-select');
+    const fontHighlightSelect = document.getElementById('font-highlight-select');
+    
+    // Копируем опции шрифтов во второй селект
+    if (fontSelect && fontHighlightSelect) {
+      fontHighlightSelect.innerHTML = fontSelect.innerHTML;
+    }
+
     const chkItalic = document.getElementById('chk-italic');
     const chkBold = document.getElementById('chk-bold');
     const chkUppercase = document.getElementById('chk-uppercase');
@@ -91,6 +98,7 @@ window.onload = function() {
 
     const DEFAULT_SETTINGS = {
       font: 'Bebas Neue',
+      fontHighlight: 'Bebas Neue',
       italic: false,
       bold: false,
       uppercase: false,
@@ -163,7 +171,8 @@ window.onload = function() {
     }
 
     async function applySettings() {
-      const font = fontSelect.value;
+      const fontCloud = fontSelect.value;
+      const fontHighlight = fontHighlightSelect ? fontHighlightSelect.value : fontCloud;
       const isItalic = chkItalic.checked;
       const isBold = chkBold.checked;
       const isUpper = chkUppercase.checked;
@@ -198,9 +207,19 @@ window.onload = function() {
         bgOverlay.style.opacity = (overlayOpacity / 100).toString();
       }
 
-      // 2. Стилизуем вытянутое слово
+      // 2. Дожидаемся загрузки обоих шрифтов браузером
+      try {
+        await Promise.all([
+          document.fonts.load(`16px "${fontCloud}"`),
+          document.fonts.load(`16px "${fontHighlight}"`)
+        ]);
+      } catch (e) {
+        console.warn('Font load error:', e);
+      }
+
+      // 3. Стилизуем вытянутое слово (шрифт выделения)
       if (draggedWordEl) {
-        draggedWordEl.style.fontFamily = `"${font}", sans-serif`;
+        draggedWordEl.style.fontFamily = `"${fontHighlight}", sans-serif`;
         draggedWordEl.style.fontStyle = isItalic ? 'italic' : 'normal';
         draggedWordEl.style.fontWeight = isBold ? 'bold' : 'normal';
         draggedWordEl.style.textTransform = isUpper ? 'uppercase' : 'none';
@@ -208,28 +227,21 @@ window.onload = function() {
         draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur * 0.8}px ${shadowColor}` : 'none';
       }
 
-      // 3. Обновляем стили <a> в списках HTML #tags
+      // 4. Обновляем стили <a> в списках HTML #tags (шрифт облака)
       const aElements = ul.querySelectorAll('a');
       aElements.forEach(a => {
         const original = a.getAttribute('data-original') || a.innerText;
         if (!a.getAttribute('data-original')) a.setAttribute('data-original', original);
         a.innerText = isUpper ? original.toUpperCase() : original;
-        a.style.fontFamily = `"${font}", sans-serif`;
+        a.style.fontFamily = `"${fontCloud}", sans-serif`;
         a.style.fontStyle = isItalic ? 'italic' : 'normal';
         a.style.fontWeight = isBold ? 'bold' : 'normal';
       });
 
-      // 4. Дожидаемся загрузки шрифта браузером, чтобы Canvas не отрисовал Arial!
-      try {
-        await document.fonts.load(`16px "${font}"`);
-      } catch (e) {
-        console.warn('Font load error:', e);
-      }
-
-      // 5. Перерисовываем TagCanvas с явным перерасчетом 3D глубины
+      // 5. Перерисовываем TagCanvas
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
-        tc.textFont = `"${font}", sans-serif`;
+        tc.textFont = `"${fontCloud}", sans-serif`;
         tc.textColour = color;
         tc.outlineColour = outlineColor;
         tc.shadowBlur = Math.round(shadowBlur * 0.5);
@@ -253,6 +265,7 @@ window.onload = function() {
     function saveSettings() {
       const settings = {
         font: fontSelect.value,
+        fontHighlight: fontHighlightSelect ? fontHighlightSelect.value : fontSelect.value,
         italic: chkItalic.checked,
         bold: chkBold.checked,
         uppercase: chkUppercase.checked,
@@ -278,6 +291,7 @@ window.onload = function() {
     function resetSettings() {
       localStorage.removeItem('cloudSettings');
       fontSelect.value = DEFAULT_SETTINGS.font;
+      if (fontHighlightSelect) fontHighlightSelect.value = DEFAULT_SETTINGS.fontHighlight;
       chkItalic.checked = DEFAULT_SETTINGS.italic;
       chkBold.checked = DEFAULT_SETTINGS.bold;
       chkUppercase.checked = DEFAULT_SETTINGS.uppercase;
@@ -308,6 +322,7 @@ window.onload = function() {
         try {
           const s = JSON.parse(saved);
           if (s.font) fontSelect.value = s.font;
+          if (s.fontHighlight && fontHighlightSelect) fontHighlightSelect.value = s.fontHighlight;
           if (s.italic !== undefined) chkItalic.checked = s.italic;
           if (s.bold !== undefined) chkBold.checked = s.bold;
           if (s.uppercase !== undefined) chkUppercase.checked = s.uppercase;
@@ -333,6 +348,7 @@ window.onload = function() {
     const autoApplyCheck = () => { if (chkAutoApply && chkAutoApply.checked) debouncedApplySettings(); };
 
     if (fontSelect) fontSelect.addEventListener('change', autoApplyCheck);
+    if (fontHighlightSelect) fontHighlightSelect.addEventListener('change', autoApplyCheck);
     if (chkItalic) chkItalic.addEventListener('change', autoApplyCheck);
     if (chkBold) chkBold.addEventListener('change', autoApplyCheck);
     if (chkUppercase) chkUppercase.addEventListener('change', autoApplyCheck);
