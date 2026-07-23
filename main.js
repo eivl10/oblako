@@ -68,7 +68,18 @@ window.onload = function() {
     const shadowSlider = document.getElementById('shadow-slider');
     const shadowVal = document.getElementById('shadow-val');
     const colorPicker = document.getElementById('color-picker');
+    const saveBtn = document.getElementById('save-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const draggedWordEl = document.getElementById('dragged-word');
+
+    const DEFAULT_SETTINGS = {
+      font: 'Bebas Neue',
+      italic: false,
+      bold: false,
+      uppercase: false,
+      shadowBlur: 1,
+      color: '#4B8BCC'
+    };
 
     // Переключение видимости панели по Ctrl+L / Cmd+L
     window.addEventListener('keydown', (e) => {
@@ -84,7 +95,20 @@ window.onload = function() {
       });
     }
 
-    function applySettings() {
+    // Динамическая асинхронная загрузка шрифтов Google Fonts
+    function ensureFontLoaded(fontFamily) {
+      const linkId = 'gfont-' + fontFamily.replace(/\s+/g, '-');
+      if (!document.getElementById(linkId)) {
+        const link = document.createElement('link');
+        link.id = linkId;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
+        document.head.appendChild(link);
+      }
+      return document.fonts ? document.fonts.ready : Promise.resolve();
+    }
+
+    async function applySettings() {
       const font = fontSelect.value;
       const isItalic = chkItalic.checked;
       const isBold = chkBold.checked;
@@ -94,21 +118,27 @@ window.onload = function() {
 
       if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
 
+      // Гарантируем, что шрифт загрузился перед отрисовкой в Canvas
+      await ensureFontLoaded(font);
+
+      const fontSpec = `${isItalic ? 'italic ' : ''}${isBold ? 'bold ' : ''}"${font}", sans-serif`;
+
       if (draggedWordEl) {
-        draggedWordEl.style.fontFamily = font;
+        draggedWordEl.style.fontFamily = `"${font}", sans-serif`;
         draggedWordEl.style.fontStyle = isItalic ? 'italic' : 'normal';
         draggedWordEl.style.fontWeight = isBold ? 'bold' : 'normal';
         draggedWordEl.style.textTransform = isUpper ? 'uppercase' : 'none';
         draggedWordEl.style.color = color;
-        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur}px ${color}66` : 'none';
+        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur}px ${color}` : 'none';
       }
 
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
-        tc.textFont = font;
+        tc.textFont = fontSpec;
         tc.textColour = color;
         tc.shadowBlur = shadowBlur;
-        tc.shadow = shadowBlur > 0 ? 'rgba(0,0,0,0.15)' : null;
+        tc.shadowOffset = [1, 1];
+        tc.shadow = shadowBlur > 0 ? color : null;
 
         const aElements = ul.querySelectorAll('a');
         aElements.forEach(a => {
@@ -121,12 +151,65 @@ window.onload = function() {
       }
     }
 
+    function saveSettings() {
+      const settings = {
+        font: fontSelect.value,
+        italic: chkItalic.checked,
+        bold: chkBold.checked,
+        uppercase: chkUppercase.checked,
+        shadowBlur: shadowSlider.value,
+        color: colorPicker.value
+      };
+      localStorage.setItem('cloudSettings', JSON.stringify(settings));
+      if (saveBtn) {
+        const oldText = saveBtn.innerText;
+        saveBtn.innerText = 'Сохранено! ✓';
+        setTimeout(() => saveBtn.innerText = oldText, 1500);
+      }
+    }
+
+    function resetSettings() {
+      localStorage.removeItem('cloudSettings');
+      fontSelect.value = DEFAULT_SETTINGS.font;
+      chkItalic.checked = DEFAULT_SETTINGS.italic;
+      chkBold.checked = DEFAULT_SETTINGS.bold;
+      chkUppercase.checked = DEFAULT_SETTINGS.uppercase;
+      shadowSlider.value = DEFAULT_SETTINGS.shadowBlur;
+      colorPicker.value = DEFAULT_SETTINGS.color;
+      applySettings();
+      if (resetBtn) {
+        const oldText = resetBtn.innerText;
+        resetBtn.innerText = 'Сброшено! ✓';
+        setTimeout(() => resetBtn.innerText = oldText, 1500);
+      }
+    }
+
+    function loadSavedSettings() {
+      const saved = localStorage.getItem('cloudSettings');
+      if (saved) {
+        try {
+          const s = JSON.parse(saved);
+          if (s.font) fontSelect.value = s.font;
+          if (s.italic !== undefined) chkItalic.checked = s.italic;
+          if (s.bold !== undefined) chkBold.checked = s.bold;
+          if (s.uppercase !== undefined) chkUppercase.checked = s.uppercase;
+          if (s.shadowBlur !== undefined) shadowSlider.value = s.shadowBlur;
+          if (s.color) colorPicker.value = s.color;
+        } catch(e) {}
+      }
+      applySettings();
+    }
+
     if (fontSelect) fontSelect.addEventListener('change', applySettings);
     if (chkItalic) chkItalic.addEventListener('change', applySettings);
     if (chkBold) chkBold.addEventListener('change', applySettings);
     if (chkUppercase) chkUppercase.addEventListener('change', applySettings);
     if (shadowSlider) shadowSlider.addEventListener('input', applySettings);
     if (colorPicker) colorPicker.addEventListener('input', applySettings);
+    if (saveBtn) saveBtn.addEventListener('click', saveSettings);
+    if (resetBtn) resetBtn.addEventListener('click', resetSettings);
+
+    loadSavedSettings();
     
     // ЛОГИКА ПОДСКАЗКИ
     const hint = document.getElementById('hint');
