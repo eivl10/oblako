@@ -34,118 +34,156 @@
       <!-- Скрытая панель управления (Ctrl + L) -->
       <div id="settings-panel" class="hidden">
         <div class="panel-header">
-          <span>⚙ Настройки облака (Ctrl + L)</span>
+          <span>⚙ Облачные настройки</span>
           <button id="close-panel-btn">✕</button>
         </div>
         
-        <div class="panel-row">
-          <label for="font-select">Шрифт (50 вариантов):</label>
-          <select id="font-select">
-            <option value="Bebas Neue" style="font-family: 'Bebas Neue', sans-serif;">Bebas Neue (гротеск)</option>
-            <option value="Montserrat" style="font-family: 'Montserrat', sans-serif;">Montserrat</option>
-            <option value="Playfair Display" style="font-family: 'Playfair Display', serif;">Playfair Display (засечки)</option>
-            <option value="Comfortaa" style="font-family: 'Comfortaa', cursive;">Comfortaa (округлый)</option>
-            <option value="Caveat" style="font-family: 'Caveat', cursive;">Caveat (рукописный)</option>
-            <option value="Cormorant Garamond" style="font-family: 'Cormorant Garamond', serif;">Cormorant Garamond</option>
-            <option value="Russo One" style="font-family: 'Russo One', sans-serif;">Russo One (плакатный)</option>
-            <option value="Marck Script" style="font-family: 'Marck Script', cursive;">Marck Script (каллиграфия)</option>
-            <option value="Pacifico" style="font-family: 'Pacifico', cursive;">Pacifico</option>
-            <option value="Amatic SC" style="font-family: 'Amatic SC', cursive;">Amatic SC</option>
-            <option value="Rubik" style="font-family: 'Rubik', sans-serif;">Rubik</option>
-            <option value="Oswald" style="font-family: 'Oswald', sans-serif;">Oswald</option>
-            <option value="Lobster" style="font-family: 'Lobster', cursive;">Lobster</option>
-            <option value="Kelly Slab" style="font-family: 'Kelly Slab', cursive;">Kelly Slab</option>
-            <option value="Forum" style="font-family: 'Forum', serif;">Forum</option>
-            <option value="Neucha" style="font-family: 'Neucha', cursive;">Neucha</option>
-            <option value="Bad Script" style="font-family: 'Bad Script', cursive;">Bad Script</option>
-            <option value="Press Start 2P" style="font-family: 'Press Start 2P', cursive;">Press Start 2P (пиксельный)</option>
-            <option value="Fira Sans" style="font-family: 'Fira Sans', sans-serif;">Fira Sans</option>
-            <option value="PT Sans" style="font-family: 'PT Sans', sans-serif;">PT Sans</option>
-            <option value="Roboto" style="font-family: 'Roboto', sans-serif;">Roboto</option>
-            <option value="Open Sans" style="font-family: 'Open Sans', sans-serif;">Open Sans</option>
-            <option value="Lora" style="font-family: 'Lora', serif;">Lora</option>
-            <option value="Merriweather" style="font-family: 'Merriweather', serif;">Merriweather</option>
-            <option value="Noto Sans" style="font-family: 'Noto Sans', sans-serif;">Noto Sans</option>
-            <option value="Ubuntu" style="font-family: 'Ubuntu', sans-serif;">Ubuntu</option>
-            <option value="Raleway" style="font-family: 'Raleway', sans-serif;">Raleway</option>
-            <option value="Cuprum" style="font-family: 'Cuprum', sans-serif;">Cuprum</option>
-            <option value="Philosopher" style="font-family: 'Philosopher', sans-serif;">Philosopher</option>
-            <option value="Tenor Sans" style="font-family: 'Tenor Sans', sans-serif;">Tenor Sans</option>
-            <option value="El Messiri" style="font-family: 'El Messiri', sans-serif;">El Messiri</option>
-            <option value="Yanone Kaffeesatz" style="font-family: 'Yanone Kaffeesatz', sans-serif;">Yanone Kaffeesatz</option>
-            <option value="Alegreya" style="font-family: 'Alegreya', serif;">Alegreya</option>
-            <option value="Alice" style="font-family: 'Alice', serif;">Alice</option>
-            <option value="Alumni Sans" style="font-family: 'Alumni Sans', sans-serif;">Alumni Sans</option>
-            <option value="Underdog" style="font-family: 'Underdog', cursive;">Underdog</option>
-            <option value="Anonymous Pro" style="font-family: 'Anonymous Pro', monospace;">Anonymous Pro (моноширинный)</option>
-            <option value="Oranienbaum" style="font-family: 'Oranienbaum', serif;">Oranienbaum</option>
-            <option value="Bellota Text" style="font-family: 'Bellota Text', cursive;">Bellota Text</option>
-            <option value="Jura" style="font-family: 'Jura', sans-serif;">Jura (техно)</option>
-            <option value="Podkova" style="font-family: 'Podkova', serif;">Podkova</option>
-            <option value="Kurale" style="font-family: 'Kurale', serif;">Kurale</option>
-            <option value="Yeseva One" style="font-family: 'Yeseva One', serif;">Yeseva One</option>
-            <option value="Ruslan Display" style="font-family: 'Ruslan Display', cursive;">Ruslan Display (древнерусский)</option>
-            <option value="Seymour One" style="font-family: 'Seymour One', sans-serif;">Seymour One</option>
-            <option value="Cormorant Infant" style="font-family: 'Cormorant Infant', serif;">Cormorant Infant</option>
-            <option value="Didact Gothic" style="font-family: 'Didact Gothic', sans-serif;">Didact Gothic</option>
-            <option value="IBM Plex Sans" style="font-family: 'IBM Plex Sans', sans-serif;">IBM Plex Sans</option>
-            <option value="Pangolin" style="font-family: 'Pangolin', cursive;">Pangolin</option>
-            <option value="Stalinist One" style="font-family: 'Stalinist One', cursive;">Stalinist One</option>
-          </select>
-        </div>
-
-        <div class="panel-row">
-          <label>Форматирование:</label>
-          <div class="checkbox-group">
-            <label><input type="checkbox" id="chk-italic"> Курсив</label>
-            <label><input type="checkbox" id="chk-bold"> Жирный</label>
-            <label><input type="checkbox" id="chk-uppercase"> Все заглавные</label>
+        <div class="panel-body">
+          <div class="panel-row">
+            <label for="font-select">Шрифт:</label>
+            <select id="font-select">
+              <option value="Bebas Neue" style="font-family: 'Bebas Neue', sans-serif;">Bebas Neue</option>
+              <option value="Montserrat" style="font-family: 'Montserrat', sans-serif;">Montserrat</option>
+              <option value="Playfair Display" style="font-family: 'Playfair Display', serif;">Playfair Display</option>
+              <option value="Comfortaa" style="font-family: 'Comfortaa', cursive;">Comfortaa</option>
+              <option value="Caveat" style="font-family: 'Caveat', cursive;">Caveat</option>
+              <option value="Cormorant Garamond" style="font-family: 'Cormorant Garamond', serif;">Cormorant Garamond</option>
+              <option value="Russo One" style="font-family: 'Russo One', sans-serif;">Russo One</option>
+              <option value="Marck Script" style="font-family: 'Marck Script', cursive;">Marck Script</option>
+              <option value="Pacifico" style="font-family: 'Pacifico', cursive;">Pacifico</option>
+              <option value="Amatic SC" style="font-family: 'Amatic SC', cursive;">Amatic SC</option>
+              <option value="Rubik" style="font-family: 'Rubik', sans-serif;">Rubik</option>
+              <option value="Oswald" style="font-family: 'Oswald', sans-serif;">Oswald</option>
+              <option value="Lobster" style="font-family: 'Lobster', cursive;">Lobster</option>
+              <option value="Kelly Slab" style="font-family: 'Kelly Slab', cursive;">Kelly Slab</option>
+              <option value="Forum" style="font-family: 'Forum', serif;">Forum</option>
+              <option value="Neucha" style="font-family: 'Neucha', cursive;">Neucha</option>
+              <option value="Bad Script" style="font-family: 'Bad Script', cursive;">Bad Script</option>
+              <option value="Press Start 2P" style="font-family: 'Press Start 2P', cursive;">Press Start 2P</option>
+              <option value="Fira Sans" style="font-family: 'Fira Sans', sans-serif;">Fira Sans</option>
+              <option value="PT Sans" style="font-family: 'PT Sans', sans-serif;">PT Sans</option>
+              <option value="Roboto" style="font-family: 'Roboto', sans-serif;">Roboto</option>
+              <option value="Open Sans" style="font-family: 'Open Sans', sans-serif;">Open Sans</option>
+              <option value="Lora" style="font-family: 'Lora', serif;">Lora</option>
+              <option value="Merriweather" style="font-family: 'Merriweather', serif;">Merriweather</option>
+              <option value="Noto Sans" style="font-family: 'Noto Sans', sans-serif;">Noto Sans</option>
+              <option value="Ubuntu" style="font-family: 'Ubuntu', sans-serif;">Ubuntu</option>
+              <option value="Raleway" style="font-family: 'Raleway', sans-serif;">Raleway</option>
+              <option value="Cuprum" style="font-family: 'Cuprum', sans-serif;">Cuprum</option>
+              <option value="Philosopher" style="font-family: 'Philosopher', sans-serif;">Philosopher</option>
+              <option value="Tenor Sans" style="font-family: 'Tenor Sans', sans-serif;">Tenor Sans</option>
+              <option value="El Messiri" style="font-family: 'El Messiri', sans-serif;">El Messiri</option>
+              <option value="Yanone Kaffeesatz" style="font-family: 'Yanone Kaffeesatz', sans-serif;">Yanone Kaffeesatz</option>
+              <option value="Alegreya" style="font-family: 'Alegreya', serif;">Alegreya</option>
+              <option value="Alice" style="font-family: 'Alice', serif;">Alice</option>
+              <option value="Alumni Sans" style="font-family: 'Alumni Sans', sans-serif;">Alumni Sans</option>
+              <option value="Underdog" style="font-family: 'Underdog', cursive;">Underdog</option>
+              <option value="Anonymous Pro" style="font-family: 'Anonymous Pro', monospace;">Anonymous Pro</option>
+              <option value="Oranienbaum" style="font-family: 'Oranienbaum', serif;">Oranienbaum</option>
+              <option value="Bellota Text" style="font-family: 'Bellota Text', cursive;">Bellota Text</option>
+              <option value="Jura" style="font-family: 'Jura', sans-serif;">Jura</option>
+              <option value="Podkova" style="font-family: 'Podkova', serif;">Podkova</option>
+              <option value="Kurale" style="font-family: 'Kurale', serif;">Kurale</option>
+              <option value="Yeseva One" style="font-family: 'Yeseva One', serif;">Yeseva One</option>
+              <option value="Ruslan Display" style="font-family: 'Ruslan Display', cursive;">Ruslan Display</option>
+              <option value="Seymour One" style="font-family: 'Seymour One', sans-serif;">Seymour One</option>
+              <option value="Cormorant Infant" style="font-family: 'Cormorant Infant', serif;">Cormorant Infant</option>
+              <option value="Didact Gothic" style="font-family: 'Didact Gothic', sans-serif;">Didact Gothic</option>
+              <option value="IBM Plex Sans" style="font-family: 'IBM Plex Sans', sans-serif;">IBM Plex Sans</option>
+              <option value="Pangolin" style="font-family: 'Pangolin', cursive;">Pangolin</option>
+              <option value="Stalinist One" style="font-family: 'Stalinist One', cursive;">Stalinist One</option>
+            </select>
           </div>
-        </div>
 
-        <div class="panel-row">
-          <label for="size-slider">Размер шрифта: <span id="size-val">24px</span></label>
-          <input type="range" id="size-slider" min="12" max="48" step="1" value="24">
-        </div>
+          <div class="panel-row horizontal">
+            <label>Стиль:</label>
+            <div class="fmt-buttons">
+              <label class="fmt-badge"><input type="checkbox" id="chk-italic"> <i>I</i></label>
+              <label class="fmt-badge"><input type="checkbox" id="chk-bold"> <b>B</b></label>
+              <label class="fmt-badge"><input type="checkbox" id="chk-uppercase"> <span>TT</span></label>
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="shadow-slider">Размытие тени: <span id="shadow-val">1px</span></label>
-          <input type="range" id="shadow-slider" min="0" max="8" step="1" value="1">
-        </div>
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Размер слов:</label>
+              <span id="size-val" class="val-badge">24px</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="size-slider" data-step="-1">−</button>
+              <input type="range" id="size-slider" min="12" max="48" step="1" value="24">
+              <button class="step-btn" data-target="size-slider" data-step="1">+</button>
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="speed-slider">Скорость вращения: <span id="speed-val">0.04</span></label>
-          <input type="range" id="speed-slider" min="0.01" max="0.10" step="0.01" value="0.04">
-        </div>
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Тень:</label>
+              <span id="shadow-val" class="val-badge">1px</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="shadow-slider" data-step="-1">−</button>
+              <input type="range" id="shadow-slider" min="0" max="8" step="1" value="1">
+              <button class="step-btn" data-target="shadow-slider" data-step="1">+</button>
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="depth-slider">3D Глубина: <span id="depth-val">0.8</span></label>
-          <input type="range" id="depth-slider" min="0.1" max="1.0" step="0.1" value="0.8">
-        </div>
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Скорость:</label>
+              <span id="speed-val" class="val-badge">4</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="speed-slider" data-step="-1">−</button>
+              <input type="range" id="speed-slider" min="0" max="10" step="1" value="4">
+              <button class="step-btn" data-target="speed-slider" data-step="1">+</button>
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="color-picker">Цвет слов:</label>
-          <input type="color" id="color-picker" value="#4B8BCC">
-        </div>
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Глубина:</label>
+              <span id="depth-val" class="val-badge">8</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="depth-slider" data-step="-1">−</button>
+              <input type="range" id="depth-slider" min="0" max="10" step="1" value="8">
+              <button class="step-btn" data-target="depth-slider" data-step="1">+</button>
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="outline-color-picker">Цвет подсветки (наведение):</label>
-          <input type="color" id="outline-color-picker" value="#5C9CDD">
-        </div>
+          <div class="panel-row inline-colors">
+            <div class="color-item">
+              <label>Слова:</label>
+              <input type="color" id="color-picker" class="color-swatch" value="#4B8BCC">
+            </div>
+            <div class="color-item">
+              <label>Подсветка:</label>
+              <input type="color" id="outline-color-picker" class="color-swatch" value="#5C9CDD">
+            </div>
+          </div>
 
-        <div class="panel-row">
-          <label for="bg-preset-select">Тема фона:</label>
-          <select id="bg-preset-select">
-            <option value="aurora">Аврора (текущий нежный)</option>
-            <option value="dark">Тёмный космос</option>
-            <option value="sunset">Закат</option>
-            <option value="minimal">Минимализм (светлый)</option>
-          </select>
-        </div>
+          <div class="panel-row">
+            <label for="bg-preset-select">Фон:</label>
+            <select id="bg-preset-select">
+              <option value="aurora">Аврора</option>
+              <option value="dark">Тёмный космос</option>
+              <option value="sunset">Закат</option>
+              <option value="minimal">Минимализм</option>
+            </select>
+          </div>
 
-        <div class="panel-row">
-          <label for="bg-opacity-slider">Прозрачность фона: <span id="bg-opacity-val">100%</span></label>
-          <input type="range" id="bg-opacity-slider" min="0" max="100" step="5" value="100">
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Прозрачность:</label>
+              <span id="bg-opacity-val" class="val-badge">100%</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="bg-opacity-slider" data-step="-5">−</button>
+              <input type="range" id="bg-opacity-slider" min="0" max="100" step="5" value="100">
+              <button class="step-btn" data-target="bg-opacity-slider" data-step="5">+</button>
+            </div>
+          </div>
         </div>
 
         <div class="panel-actions">

@@ -90,8 +90,8 @@ window.onload = function() {
       uppercase: false,
       size: 24,
       shadowBlur: 1,
-      speed: 0.04,
-      depth: 0.8,
+      speed: 4,
+      depth: 8,
       color: '#4B8BCC',
       outlineColor: '#5C9CDD',
       bgPreset: 'aurora',
@@ -112,10 +112,27 @@ window.onload = function() {
       });
     }
 
+    // Обработчик кнопок-степперов + и -
+    document.querySelectorAll('.step-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const targetId = e.currentTarget.getAttribute('data-target');
+        const step = parseFloat(e.currentTarget.getAttribute('data-step'));
+        const input = document.getElementById(targetId);
+        if (input) {
+          const min = parseFloat(input.min);
+          const max = parseFloat(input.max);
+          const curr = parseFloat(input.value);
+          const newVal = Math.min(max, Math.max(min, curr + step));
+          input.value = newVal;
+          debouncedApplySettings();
+        }
+      });
+    });
+
     let applyTimer = null;
     function debouncedApplySettings() {
       if (applyTimer) clearTimeout(applyTimer);
-      applyTimer = setTimeout(applySettings, 40);
+      applyTimer = setTimeout(applySettings, 30);
     }
 
     function applySettings() {
@@ -125,17 +142,20 @@ window.onload = function() {
       const isUpper = chkUppercase.checked;
       const fontSizePx = parseInt(sizeSlider ? sizeSlider.value : 24);
       const shadowBlur = parseInt(shadowSlider.value);
-      const maxSpeed = parseFloat(speedSlider ? speedSlider.value : 0.04);
-      const depth = parseFloat(depthSlider ? depthSlider.value : 0.8);
+      const speedValRaw = parseInt(speedSlider ? speedSlider.value : 4);
+      const depthValRaw = parseInt(depthSlider ? depthSlider.value : 8);
       const color = colorPicker.value;
       const outlineColor = outlineColorPicker ? outlineColorPicker.value : '#5C9CDD';
       const bgPreset = bgPresetSelect ? bgPresetSelect.value : 'aurora';
       const bgOpacity = bgOpacitySlider ? parseInt(bgOpacitySlider.value) : 100;
 
+      const maxSpeed = speedValRaw / 100.0;
+      const depth = depthValRaw / 10.0;
+
       if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
       if (sizeVal) sizeVal.innerText = fontSizePx + 'px';
-      if (speedVal) speedVal.innerText = maxSpeed.toFixed(2);
-      if (depthVal) depthVal.innerText = depth.toFixed(1);
+      if (speedVal) speedVal.innerText = speedValRaw;
+      if (depthVal) depthVal.innerText = depthValRaw;
       if (bgOpacityVal) bgOpacityVal.innerText = bgOpacity + '%';
 
       // 1. Применяем настройки фона
@@ -165,7 +185,7 @@ window.onload = function() {
         a.style.fontWeight = isBold ? 'bold' : 'normal';
       });
 
-      // 4. Перерисовываем TagCanvas
+      // 4. Перерисовываем TagCanvas с явным перерасчетом 3D глубины
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
         tc.textFont = `"${font}", sans-serif`;
@@ -177,6 +197,8 @@ window.onload = function() {
         tc.weightSize = fontSizePx / 24.0;
         tc.maxSpeed = maxSpeed;
         tc.depth = depth;
+        tc.z1 = 250 / Math.max(depth, 0.001);
+        tc.z2 = tc.z1 / tc.zoom;
 
         TagCanvas.Reload('myCanvas');
       }
@@ -190,8 +212,8 @@ window.onload = function() {
         uppercase: chkUppercase.checked,
         size: sizeSlider ? sizeSlider.value : 24,
         shadowBlur: shadowSlider.value,
-        speed: speedSlider ? speedSlider.value : 0.04,
-        depth: depthSlider ? depthSlider.value : 0.8,
+        speed: speedSlider ? speedSlider.value : 4,
+        depth: depthSlider ? depthSlider.value : 8,
         color: colorPicker.value,
         outlineColor: outlineColorPicker ? outlineColorPicker.value : '#5C9CDD',
         bgPreset: bgPresetSelect ? bgPresetSelect.value : 'aurora',
@@ -279,14 +301,14 @@ window.onload = function() {
       }, 5000); // Подсказка висит 5 секунд
     }
 
-    // Появляется через 10 секунд после открытия
+    // Появляется через 1.5 секунды после открытия
     setTimeout(() => {
       showHint();
       // Затем каждые 2 минуты (120 000 мс)
       hintInterval = setInterval(() => {
         showHint();
       }, 120000);
-    }, 10000);
+    }, 1500);
 
     // ЛОГИКА ВЫТЯГИВАНИЯ СЛОВА
     const canvas = document.getElementById('myCanvas');
