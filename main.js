@@ -106,9 +106,9 @@ window.onload = function() {
       shadowBlur: 1,
       speed: 4,
       depth: 8,
-      color: '#4B8BCC',
-      outlineColor: '#5C9CDD',
-      shadowColor: '#4B8BCC',
+      color: '#ffffff',
+      outlineColor: '#000000',
+      shadowColor: '#000000',
       bgPreset: 'aurora',
       bgOpacity: 70,
       bgOverlay: 0,
@@ -213,6 +213,8 @@ window.onload = function() {
           document.fonts.load(`16px "${fontCloud}"`),
           document.fonts.load(`16px "${fontHighlight}"`)
         ]);
+        // Ждем 1 кадр, чтобы браузер успел применить шрифты к DOM перед чтением TagCanvas
+        await new Promise(r => setTimeout(r, 50));
       } catch (e) {
         console.warn('Font load error:', e);
       }

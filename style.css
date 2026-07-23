@@ -163,7 +163,7 @@ canvas {
   position: absolute;
   font-family: 'Bebas Neue', sans-serif;
   /* Размер будет задаваться через JS динамически */
-  color: #4B8BCC; /* Pantone Azure Blue */
+  color: #fff; /* Дефолт переопределится JS */
   pointer-events: none;
   z-index: 20;
   transform: translate(-50%, -50%);
@@ -268,9 +268,9 @@ canvas {
 
 .val-badge {
   font-size: 11px;
-  color: #4B8BCC;
+  color: #222;
   font-weight: 600;
-  background: rgba(0,0,0,0.03);
+  background: rgba(0,0,0,0.06);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -278,7 +278,7 @@ canvas {
 .panel-row select {
   padding: 6px 10px;
   border-radius: 8px;
-  border: 1px solid rgba(75, 139, 204, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.15);
   background: #fff;
   font-size: 13px;
   color: #333;
@@ -320,9 +320,9 @@ canvas {
 }
 
 .fmt-badge:has(input:checked) {
-  background: #4B8BCC;
+  background: #222;
   color: #fff;
-  border-color: #4B8BCC;
+  border-color: #222;
 }
 
 .stepper {
@@ -336,9 +336,9 @@ canvas {
   height: 26px;
   min-width: 26px;
   border-radius: 6px;
-  background: rgba(75, 139, 204, 0.1);
-  border: 1px solid rgba(75, 139, 204, 0.25);
-  color: #4B8BCC;
+  background: #f0f0f0;
+  border: 1px solid #ddd;
+  color: #333;
   font-weight: bold;
   font-size: 14px;
   cursor: pointer;
@@ -350,13 +350,13 @@ canvas {
 }
 
 .step-btn:hover {
-  background: rgba(75, 139, 204, 0.25);
+  background: #e4e4e4;
 }
 
 .stepper input[type="range"] {
   flex: 1;
   height: 4px;
-  accent-color: #4B8BCC;
+  accent-color: #222;
   cursor: pointer;
 }
 
@@ -404,7 +404,7 @@ canvas {
 
 .btn-primary {
   flex: 1;
-  background: #4B8BCC;
+  background: #222;
   color: #fff;
   border: none;
   padding: 8px 12px;
@@ -416,7 +416,7 @@ canvas {
 }
 
 .btn-primary:hover {
-  background: #3a75b2;
+  background: #000;
 }
 
 .btn-secondary {
