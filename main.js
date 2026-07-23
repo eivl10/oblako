@@ -75,6 +75,7 @@ window.onload = function() {
     const depthVal = document.getElementById('depth-val');
     const colorPicker = document.getElementById('color-picker');
     const outlineColorPicker = document.getElementById('outline-color-picker');
+    const shadowColorPicker = document.getElementById('shadow-color-picker');
     const bgPresetSelect = document.getElementById('bg-preset-select');
     const bgOpacitySlider = document.getElementById('bg-opacity-slider');
     const bgOpacityVal = document.getElementById('bg-opacity-val');
@@ -94,8 +95,9 @@ window.onload = function() {
       depth: 8,
       color: '#4B8BCC',
       outlineColor: '#5C9CDD',
+      shadowColor: '#4B8BCC',
       bgPreset: 'aurora',
-      bgOpacity: 100
+      bgOpacity: 70
     };
 
     // Переключение видимости панели по Ctrl+L / Cmd+L
@@ -132,7 +134,7 @@ window.onload = function() {
     let applyTimer = null;
     function debouncedApplySettings() {
       if (applyTimer) clearTimeout(applyTimer);
-      applyTimer = setTimeout(applySettings, 30);
+      applyTimer = setTimeout(applySettings, 20);
     }
 
     function applySettings() {
@@ -146,10 +148,12 @@ window.onload = function() {
       const depthValRaw = parseInt(depthSlider ? depthSlider.value : 8);
       const color = colorPicker.value;
       const outlineColor = outlineColorPicker ? outlineColorPicker.value : '#5C9CDD';
+      const shadowColor = shadowColorPicker ? shadowColorPicker.value : '#4B8BCC';
       const bgPreset = bgPresetSelect ? bgPresetSelect.value : 'aurora';
-      const bgOpacity = bgOpacitySlider ? parseInt(bgOpacitySlider.value) : 100;
+      const bgOpacity = bgOpacitySlider ? parseInt(bgOpacitySlider.value) : 70;
 
-      const maxSpeed = speedValRaw / 100.0;
+      // Максимальная скорость в 2 раза быстрее (до 0.20 вместо 0.10)
+      const maxSpeed = speedValRaw / 50.0;
       const depth = depthValRaw / 10.0;
 
       if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
@@ -171,7 +175,7 @@ window.onload = function() {
         draggedWordEl.style.fontWeight = isBold ? 'bold' : 'normal';
         draggedWordEl.style.textTransform = isUpper ? 'uppercase' : 'none';
         draggedWordEl.style.color = color;
-        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur * 0.8}px ${color}` : 'none';
+        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur * 0.8}px ${shadowColor}` : 'none';
       }
 
       // 3. Обновляем стили <a> в списках HTML #tags
@@ -193,7 +197,7 @@ window.onload = function() {
         tc.outlineColour = outlineColor;
         tc.shadowBlur = Math.round(shadowBlur * 0.5);
         tc.shadowOffset = [0.5, 0.5];
-        tc.shadow = shadowBlur > 0 ? color : null;
+        tc.shadow = shadowBlur > 0 ? shadowColor : null;
         tc.weightSize = fontSizePx / 24.0;
         tc.maxSpeed = maxSpeed;
         tc.depth = depth;
@@ -216,8 +220,9 @@ window.onload = function() {
         depth: depthSlider ? depthSlider.value : 8,
         color: colorPicker.value,
         outlineColor: outlineColorPicker ? outlineColorPicker.value : '#5C9CDD',
+        shadowColor: shadowColorPicker ? shadowColorPicker.value : '#4B8BCC',
         bgPreset: bgPresetSelect ? bgPresetSelect.value : 'aurora',
-        bgOpacity: bgOpacitySlider ? bgOpacitySlider.value : 100
+        bgOpacity: bgOpacitySlider ? bgOpacitySlider.value : 70
       };
       localStorage.setItem('cloudSettings', JSON.stringify(settings));
       if (saveBtn) {
@@ -239,6 +244,7 @@ window.onload = function() {
       if (depthSlider) depthSlider.value = DEFAULT_SETTINGS.depth;
       colorPicker.value = DEFAULT_SETTINGS.color;
       if (outlineColorPicker) outlineColorPicker.value = DEFAULT_SETTINGS.outlineColor;
+      if (shadowColorPicker) shadowColorPicker.value = DEFAULT_SETTINGS.shadowColor;
       if (bgPresetSelect) bgPresetSelect.value = DEFAULT_SETTINGS.bgPreset;
       if (bgOpacitySlider) bgOpacitySlider.value = DEFAULT_SETTINGS.bgOpacity;
       applySettings();
@@ -264,6 +270,7 @@ window.onload = function() {
           if (s.depth !== undefined && depthSlider) depthSlider.value = s.depth;
           if (s.color) colorPicker.value = s.color;
           if (s.outlineColor && outlineColorPicker) outlineColorPicker.value = s.outlineColor;
+          if (s.shadowColor && shadowColorPicker) shadowColorPicker.value = s.shadowColor;
           if (s.bgPreset && bgPresetSelect) bgPresetSelect.value = s.bgPreset;
           if (s.bgOpacity !== undefined && bgOpacitySlider) bgOpacitySlider.value = s.bgOpacity;
         } catch(e) {}
@@ -281,6 +288,7 @@ window.onload = function() {
     if (depthSlider) depthSlider.addEventListener('input', debouncedApplySettings);
     if (colorPicker) colorPicker.addEventListener('input', debouncedApplySettings);
     if (outlineColorPicker) outlineColorPicker.addEventListener('input', debouncedApplySettings);
+    if (shadowColorPicker) shadowColorPicker.addEventListener('input', debouncedApplySettings);
     if (bgPresetSelect) bgPresetSelect.addEventListener('change', debouncedApplySettings);
     if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', debouncedApplySettings);
     if (saveBtn) saveBtn.addEventListener('click', saveSettings);

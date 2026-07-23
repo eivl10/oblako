@@ -161,26 +161,31 @@
               <label>Подсветка:</label>
               <input type="color" id="outline-color-picker" class="color-swatch" value="#5C9CDD">
             </div>
+            <div class="color-item">
+              <label>Тень:</label>
+              <input type="color" id="shadow-color-picker" class="color-swatch" value="#4B8BCC">
+            </div>
           </div>
 
           <div class="panel-row">
             <label for="bg-preset-select">Фон:</label>
             <select id="bg-preset-select">
-              <option value="aurora">Аврора</option>
-              <option value="dark">Тёмный космос</option>
-              <option value="sunset">Закат</option>
-              <option value="minimal">Минимализм</option>
+              <option value="aurora">Аврора (нежный)</option>
+              <option value="cyberpunk">Неоновый Киберпанк</option>
+              <option value="bali">Закат на Бали</option>
+              <option value="emerald">Изумрудная Магия</option>
+              <option value="pastel">Пастельные Облака</option>
             </select>
           </div>
 
           <div class="panel-row">
             <div class="label-val-row">
               <label>Прозрачность:</label>
-              <span id="bg-opacity-val" class="val-badge">100%</span>
+              <span id="bg-opacity-val" class="val-badge">70%</span>
             </div>
             <div class="stepper">
               <button class="step-btn" data-target="bg-opacity-slider" data-step="-5">−</button>
-              <input type="range" id="bg-opacity-slider" min="0" max="100" step="5" value="100">
+              <input type="range" id="bg-opacity-slider" min="0" max="100" step="5" value="70">
               <button class="step-btn" data-target="bg-opacity-slider" data-step="5">+</button>
             </div>
           </div>
