@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="aurora-bg"></div>
+    <div class="aurora-bg preset-aurora"></div>
+  <div class="bg-overlay" id="bg-overlay" style="opacity: 0"></div>
     <div id="app">
       <!-- Всплывающая подсказка по центру сверху -->
       <div id="hint">Слова можно подёргать</div>
@@ -191,6 +192,25 @@
               <input type="range" id="bg-opacity-slider" min="0" max="100" step="5" value="70">
               <button class="step-btn" data-target="bg-opacity-slider" data-step="5">+</button>
             </div>
+          </div>
+
+          <div class="panel-row">
+            <div class="label-val-row">
+              <label>Затемнение:</label>
+              <span id="bg-overlay-val" class="val-badge">0%</span>
+            </div>
+            <div class="stepper">
+              <button class="step-btn" data-target="bg-overlay-slider" data-step="-5">−</button>
+              <input type="range" id="bg-overlay-slider" min="0" max="100" step="5" value="0">
+              <button class="step-btn" data-target="bg-overlay-slider" data-step="5">+</button>
+            </div>
+          </div>
+
+          <div class="panel-row checkbox-group">
+            <label>
+              <input type="checkbox" id="chk-auto-apply">
+              Применять сразу
+            </label>
           </div>
         </div>
 

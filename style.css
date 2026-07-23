@@ -24,8 +24,17 @@ body {
 .aurora-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  z-index: -1;
+  z-index: -2;
   transition: opacity 0.3s ease, background 0.5s ease;
+}
+
+.bg-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #000;
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
 /* Сочные анимированные темы фонов */
@@ -89,7 +98,7 @@ body {
 
 /* Пресет: Море */
 .aurora-bg.preset-sea {
-  background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+  background: url('https://images.unsplash.com/photo-1518837695005-2083093ee354?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
   animation: none;
 }
 

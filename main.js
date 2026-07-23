@@ -79,7 +79,12 @@ window.onload = function() {
     const bgPresetSelect = document.getElementById('bg-preset-select');
     const bgOpacitySlider = document.getElementById('bg-opacity-slider');
     const bgOpacityVal = document.getElementById('bg-opacity-val');
+    const bgOverlaySlider = document.getElementById('bg-overlay-slider');
+    const bgOverlayVal = document.getElementById('bg-overlay-val');
+    const chkAutoApply = document.getElementById('chk-auto-apply');
+    const applyBtn = document.getElementById('apply-btn');
     const auroraBg = document.querySelector('.aurora-bg');
+    const bgOverlay = document.getElementById('bg-overlay');
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
     const draggedWordEl = document.getElementById('dragged-word');
@@ -97,7 +102,9 @@ window.onload = function() {
       outlineColor: '#5C9CDD',
       shadowColor: '#4B8BCC',
       bgPreset: 'aurora',
-      bgOpacity: 70
+      bgOpacity: 70,
+      bgOverlay: 0,
+      autoApply: false
     };
 
     // Переключение видимости панели по Ctrl+L / Cmd+L
@@ -112,6 +119,12 @@ window.onload = function() {
       closePanelBtn.addEventListener('click', () => {
         settingsPanel.classList.add('hidden');
       });
+    }
+
+    let applyTimer = null;
+    function debouncedApplySettings() {
+      if (applyTimer) clearTimeout(applyTimer);
+      applyTimer = setTimeout(applySettings, 20);
     }
 
     // Обработчик кнопок-степперов + и -
@@ -133,11 +146,21 @@ window.onload = function() {
           if (targetId === 'speed-slider' && speedVal) speedVal.innerText = newVal;
           if (targetId === 'depth-slider' && depthVal) depthVal.innerText = newVal;
           if (targetId === 'bg-opacity-slider' && bgOpacityVal) bgOpacityVal.innerText = newVal + '%';
+          if (targetId === 'bg-overlay-slider' && bgOverlayVal) bgOverlayVal.innerText = newVal + '%';
+
+          if (chkAutoApply && chkAutoApply.checked) {
+            debouncedApplySettings();
+          }
         }
       });
     });
 
-    const applyBtn = document.getElementById('apply-btn');
+    if (chkAutoApply) {
+      chkAutoApply.addEventListener('change', () => {
+        applyBtn.style.display = chkAutoApply.checked ? 'none' : 'block';
+        if (chkAutoApply.checked) debouncedApplySettings();
+      });
+    }
 
     async function applySettings() {
       const font = fontSelect.value;
@@ -153,6 +176,7 @@ window.onload = function() {
       const shadowColor = shadowColorPicker ? shadowColorPicker.value : '#4B8BCC';
       const bgPreset = bgPresetSelect ? bgPresetSelect.value : 'aurora';
       const bgOpacity = bgOpacitySlider ? parseInt(bgOpacitySlider.value) : 70;
+      const overlayOpacity = bgOverlaySlider ? parseInt(bgOverlaySlider.value) : 0;
 
       // Максимальная скорость в 2 раза быстрее (до 0.20 вместо 0.10)
       const maxSpeed = speedValRaw / 50.0;
@@ -163,11 +187,15 @@ window.onload = function() {
       if (speedVal) speedVal.innerText = speedValRaw;
       if (depthVal) depthVal.innerText = depthValRaw;
       if (bgOpacityVal) bgOpacityVal.innerText = bgOpacity + '%';
+      if (bgOverlayVal) bgOverlayVal.innerText = overlayOpacity + '%';
 
       // 1. Применяем настройки фона
       if (auroraBg) {
         auroraBg.className = 'aurora-bg preset-' + bgPreset;
         auroraBg.style.opacity = (bgOpacity / 100).toString();
+      }
+      if (bgOverlay) {
+        bgOverlay.style.opacity = (overlayOpacity / 100).toString();
       }
 
       // 2. Стилизуем вытянутое слово
@@ -216,10 +244,9 @@ window.onload = function() {
         TagCanvas.Reload('myCanvas');
       }
 
-      if (applyBtn) {
-        const oldText = applyBtn.innerText;
-        applyBtn.innerText = 'Применено! ✓';
-        setTimeout(() => applyBtn.innerText = oldText, 1500);
+      if (applyBtn && applyBtn.style.display !== 'none') {
+        applyBtn.innerText = 'Применено';
+        setTimeout(() => applyBtn.innerText = 'Применить', 1000);
       }
     }
 
@@ -237,13 +264,14 @@ window.onload = function() {
         outlineColor: outlineColorPicker ? outlineColorPicker.value : '#5C9CDD',
         shadowColor: shadowColorPicker ? shadowColorPicker.value : '#4B8BCC',
         bgPreset: bgPresetSelect ? bgPresetSelect.value : 'aurora',
-        bgOpacity: bgOpacitySlider ? bgOpacitySlider.value : 70
+        bgOpacity: bgOpacitySlider ? bgOpacitySlider.value : 70,
+        bgOverlay: bgOverlaySlider ? bgOverlaySlider.value : 0,
+        autoApply: chkAutoApply ? chkAutoApply.checked : false
       };
       localStorage.setItem('cloudSettings', JSON.stringify(settings));
       if (saveBtn) {
-        const oldText = saveBtn.innerText;
-        saveBtn.innerText = 'Сохранено! ✓';
-        setTimeout(() => saveBtn.innerText = oldText, 1500);
+        saveBtn.innerText = 'Сохранено';
+        setTimeout(() => saveBtn.innerText = 'Сохранить', 1000);
       }
     }
 
@@ -262,11 +290,15 @@ window.onload = function() {
       if (shadowColorPicker) shadowColorPicker.value = DEFAULT_SETTINGS.shadowColor;
       if (bgPresetSelect) bgPresetSelect.value = DEFAULT_SETTINGS.bgPreset;
       if (bgOpacitySlider) bgOpacitySlider.value = DEFAULT_SETTINGS.bgOpacity;
+      if (bgOverlaySlider) bgOverlaySlider.value = DEFAULT_SETTINGS.bgOverlay;
+      if (chkAutoApply) {
+        chkAutoApply.checked = DEFAULT_SETTINGS.autoApply;
+        applyBtn.style.display = chkAutoApply.checked ? 'none' : 'block';
+      }
       applySettings();
       if (resetBtn) {
-        const oldText = resetBtn.innerText;
-        resetBtn.innerText = 'Сброшено! ✓';
-        setTimeout(() => resetBtn.innerText = oldText, 1500);
+        resetBtn.innerText = 'Сброшено';
+        setTimeout(() => resetBtn.innerText = 'Сброс', 1000);
       }
     }
 
@@ -288,17 +320,34 @@ window.onload = function() {
           if (s.shadowColor && shadowColorPicker) shadowColorPicker.value = s.shadowColor;
           if (s.bgPreset && bgPresetSelect) bgPresetSelect.value = s.bgPreset;
           if (s.bgOpacity !== undefined && bgOpacitySlider) bgOpacitySlider.value = s.bgOpacity;
+          if (s.bgOverlay !== undefined && bgOverlaySlider) bgOverlaySlider.value = s.bgOverlay;
+          if (s.autoApply !== undefined && chkAutoApply) {
+            chkAutoApply.checked = s.autoApply;
+            applyBtn.style.display = chkAutoApply.checked ? 'none' : 'block';
+          }
         } catch(e) {}
       }
       applySettings();
     }
 
+    const autoApplyCheck = () => { if (chkAutoApply && chkAutoApply.checked) debouncedApplySettings(); };
+
+    if (fontSelect) fontSelect.addEventListener('change', autoApplyCheck);
+    if (chkItalic) chkItalic.addEventListener('change', autoApplyCheck);
+    if (chkBold) chkBold.addEventListener('change', autoApplyCheck);
+    if (chkUppercase) chkUppercase.addEventListener('change', autoApplyCheck);
+    if (colorPicker) colorPicker.addEventListener('input', autoApplyCheck);
+    if (outlineColorPicker) outlineColorPicker.addEventListener('input', autoApplyCheck);
+    if (shadowColorPicker) shadowColorPicker.addEventListener('input', autoApplyCheck);
+    if (bgPresetSelect) bgPresetSelect.addEventListener('change', autoApplyCheck);
+
     // Обновление цифр при движении ползунков без перерисовки Canvas
-    if (sizeSlider) sizeSlider.addEventListener('input', (e) => { if(sizeVal) sizeVal.innerText = e.target.value + 'px'; });
-    if (shadowSlider) shadowSlider.addEventListener('input', (e) => { if(shadowVal) shadowVal.innerText = e.target.value + 'px'; });
-    if (speedSlider) speedSlider.addEventListener('input', (e) => { if(speedVal) speedVal.innerText = e.target.value; });
-    if (depthSlider) depthSlider.addEventListener('input', (e) => { if(depthVal) depthVal.innerText = e.target.value; });
-    if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', (e) => { if(bgOpacityVal) bgOpacityVal.innerText = e.target.value + '%'; });
+    if (sizeSlider) sizeSlider.addEventListener('input', (e) => { if(sizeVal) sizeVal.innerText = e.target.value + 'px'; autoApplyCheck(); });
+    if (shadowSlider) shadowSlider.addEventListener('input', (e) => { if(shadowVal) shadowVal.innerText = e.target.value + 'px'; autoApplyCheck(); });
+    if (speedSlider) speedSlider.addEventListener('input', (e) => { if(speedVal) speedVal.innerText = e.target.value; autoApplyCheck(); });
+    if (depthSlider) depthSlider.addEventListener('input', (e) => { if(depthVal) depthVal.innerText = e.target.value; autoApplyCheck(); });
+    if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', (e) => { if(bgOpacityVal) bgOpacityVal.innerText = e.target.value + '%'; autoApplyCheck(); });
+    if (bgOverlaySlider) bgOverlaySlider.addEventListener('input', (e) => { if(bgOverlayVal) bgOverlayVal.innerText = e.target.value + '%'; autoApplyCheck(); });
 
     if (applyBtn) applyBtn.addEventListener('click', applySettings);
     if (saveBtn) saveBtn.addEventListener('click', saveSettings);
