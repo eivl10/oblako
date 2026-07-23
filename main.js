@@ -62,6 +62,10 @@ window.onload = function() {
     const settingsPanel = document.getElementById('settings-panel');
     const closePanelBtn = document.getElementById('close-panel-btn');
     const fontSelect = document.getElementById('font-select');
+    // ЛОГИКА ПАНЕЛИ НАСТРОЕК (Ctrl + L)
+    const settingsPanel = document.getElementById('settings-panel');
+    const closePanelBtn = document.getElementById('close-panel-btn');
+    const fontSelect = document.getElementById('font-select');
     const chkItalic = document.getElementById('chk-italic');
     const chkBold = document.getElementById('chk-bold');
     const chkUppercase = document.getElementById('chk-uppercase');
@@ -69,6 +73,10 @@ window.onload = function() {
     const sizeVal = document.getElementById('size-val');
     const shadowSlider = document.getElementById('shadow-slider');
     const shadowVal = document.getElementById('shadow-val');
+    const speedSlider = document.getElementById('speed-slider');
+    const speedVal = document.getElementById('speed-val');
+    const depthSlider = document.getElementById('depth-slider');
+    const depthVal = document.getElementById('depth-val');
     const colorPicker = document.getElementById('color-picker');
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
@@ -79,8 +87,10 @@ window.onload = function() {
       italic: false,
       bold: false,
       uppercase: false,
-      size: 1.0,
+      size: 24,
       shadowBlur: 1,
+      speed: 0.04,
+      depth: 0.8,
       color: '#4B8BCC'
     };
 
@@ -98,58 +108,39 @@ window.onload = function() {
       });
     }
 
-    // Динамическая асинхронная загрузка шрифтов Google Fonts
-    async function ensureFontLoaded(fontFamily) {
-      const linkId = 'gfont-' + fontFamily.replace(/\s+/g, '-');
-      if (!document.getElementById(linkId)) {
-        const link = document.createElement('link');
-        link.id = linkId;
-        link.rel = 'stylesheet';
-        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:ital,wght@0,400;0,700;1,400;1,700&display=swap`;
-        document.head.appendChild(link);
-      }
-      try {
-        if (document.fonts) {
-          await document.fonts.load(`16px "${fontFamily}"`);
-          await document.fonts.ready;
-        }
-      } catch (e) {
-        console.warn('Font load fallback:', fontFamily);
-      }
-    }
-
     let applyTimer = null;
     function debouncedApplySettings() {
       if (applyTimer) clearTimeout(applyTimer);
-      applyTimer = setTimeout(applySettings, 60);
+      applyTimer = setTimeout(applySettings, 40);
     }
 
-    async function applySettings() {
+    function applySettings() {
       const font = fontSelect.value;
       const isItalic = chkItalic.checked;
       const isBold = chkBold.checked;
       const isUpper = chkUppercase.checked;
-      const fontSizeScale = parseFloat(sizeSlider ? sizeSlider.value : 1.0);
+      const fontSizePx = parseInt(sizeSlider ? sizeSlider.value : 24);
       const shadowBlur = parseInt(shadowSlider.value);
+      const maxSpeed = parseFloat(speedSlider ? speedSlider.value : 0.04);
+      const depth = parseFloat(depthSlider ? depthSlider.value : 0.8);
       const color = colorPicker.value;
 
       if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
-      if (sizeVal) sizeVal.innerText = fontSizeScale.toFixed(1) + 'x';
+      if (sizeVal) sizeVal.innerText = fontSizePx + 'px';
+      if (speedVal) speedVal.innerText = maxSpeed.toFixed(2);
+      if (depthVal) depthVal.innerText = depth.toFixed(1);
 
-      // 1. Ждем реальной загрузки шрифта браузером
-      await ensureFontLoaded(font);
-
-      // 2. Стилизуем вытянутое слово
+      // 1. Стилизуем вытянутое слово
       if (draggedWordEl) {
         draggedWordEl.style.fontFamily = `"${font}", sans-serif`;
         draggedWordEl.style.fontStyle = isItalic ? 'italic' : 'normal';
         draggedWordEl.style.fontWeight = isBold ? 'bold' : 'normal';
         draggedWordEl.style.textTransform = isUpper ? 'uppercase' : 'none';
         draggedWordEl.style.color = color;
-        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur}px ${color}` : 'none';
+        draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur * 0.8}px ${color}` : 'none';
       }
 
-      // 3. Обновляем стили <a> в списках HTML #tags
+      // 2. Обновляем стили <a> в списках HTML #tags
       const aElements = ul.querySelectorAll('a');
       aElements.forEach(a => {
         const original = a.getAttribute('data-original') || a.innerText;
@@ -160,15 +151,17 @@ window.onload = function() {
         a.style.fontWeight = isBold ? 'bold' : 'normal';
       });
 
-      // 4. Перерисовываем TagCanvas
+      // 3. Перерисовываем TagCanvas
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
-        tc.textFont = `"${font}", sans-serif`; // Чистое имя семейства шрифта без CSS префиксов!
+        tc.textFont = `"${font}", sans-serif`;
         tc.textColour = color;
-        tc.shadowBlur = shadowBlur;
-        tc.shadowOffset = [1, 1];
+        tc.shadowBlur = Math.round(shadowBlur * 0.5);
+        tc.shadowOffset = [0.5, 0.5];
         tc.shadow = shadowBlur > 0 ? color : null;
-        tc.weightSize = fontSizeScale;
+        tc.weightSize = fontSizePx / 24.0;
+        tc.maxSpeed = maxSpeed;
+        tc.depth = depth;
 
         TagCanvas.Reload('myCanvas');
       }
@@ -180,8 +173,10 @@ window.onload = function() {
         italic: chkItalic.checked,
         bold: chkBold.checked,
         uppercase: chkUppercase.checked,
-        size: sizeSlider ? sizeSlider.value : 1.0,
+        size: sizeSlider ? sizeSlider.value : 24,
         shadowBlur: shadowSlider.value,
+        speed: speedSlider ? speedSlider.value : 0.04,
+        depth: depthSlider ? depthSlider.value : 0.8,
         color: colorPicker.value
       };
       localStorage.setItem('cloudSettings', JSON.stringify(settings));
@@ -200,6 +195,8 @@ window.onload = function() {
       chkUppercase.checked = DEFAULT_SETTINGS.uppercase;
       if (sizeSlider) sizeSlider.value = DEFAULT_SETTINGS.size;
       shadowSlider.value = DEFAULT_SETTINGS.shadowBlur;
+      if (speedSlider) speedSlider.value = DEFAULT_SETTINGS.speed;
+      if (depthSlider) depthSlider.value = DEFAULT_SETTINGS.depth;
       colorPicker.value = DEFAULT_SETTINGS.color;
       applySettings();
       if (resetBtn) {
@@ -220,6 +217,8 @@ window.onload = function() {
           if (s.uppercase !== undefined) chkUppercase.checked = s.uppercase;
           if (s.size !== undefined && sizeSlider) sizeSlider.value = s.size;
           if (s.shadowBlur !== undefined) shadowSlider.value = s.shadowBlur;
+          if (s.speed !== undefined && speedSlider) speedSlider.value = s.speed;
+          if (s.depth !== undefined && depthSlider) depthSlider.value = s.depth;
           if (s.color) colorPicker.value = s.color;
         } catch(e) {}
       }
@@ -232,6 +231,8 @@ window.onload = function() {
     if (chkUppercase) chkUppercase.addEventListener('change', debouncedApplySettings);
     if (sizeSlider) sizeSlider.addEventListener('input', debouncedApplySettings);
     if (shadowSlider) shadowSlider.addEventListener('input', debouncedApplySettings);
+    if (speedSlider) speedSlider.addEventListener('input', debouncedApplySettings);
+    if (depthSlider) depthSlider.addEventListener('input', debouncedApplySettings);
     if (colorPicker) colorPicker.addEventListener('input', debouncedApplySettings);
     if (saveBtn) saveBtn.addEventListener('click', saveSettings);
     if (resetBtn) resetBtn.addEventListener('click', resetSettings);
@@ -362,7 +363,7 @@ window.onload = function() {
       const dx = startX - currentX;
       const dy = startY - currentY;
       
-      const isMasya = draggedWord.innerText === 'Мася';
+      const isMasya = draggedWord.innerText.trim().toLowerCase() === 'мася';
       
       if (!isMasya) {
         let pullStrength = 0;
