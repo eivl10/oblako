@@ -62,10 +62,6 @@ window.onload = function() {
     const settingsPanel = document.getElementById('settings-panel');
     const closePanelBtn = document.getElementById('close-panel-btn');
     const fontSelect = document.getElementById('font-select');
-    // ЛОГИКА ПАНЕЛИ НАСТРОЕК (Ctrl + L)
-    const settingsPanel = document.getElementById('settings-panel');
-    const closePanelBtn = document.getElementById('close-panel-btn');
-    const fontSelect = document.getElementById('font-select');
     const chkItalic = document.getElementById('chk-italic');
     const chkBold = document.getElementById('chk-bold');
     const chkUppercase = document.getElementById('chk-uppercase');
@@ -78,6 +74,11 @@ window.onload = function() {
     const depthSlider = document.getElementById('depth-slider');
     const depthVal = document.getElementById('depth-val');
     const colorPicker = document.getElementById('color-picker');
+    const outlineColorPicker = document.getElementById('outline-color-picker');
+    const bgPresetSelect = document.getElementById('bg-preset-select');
+    const bgOpacitySlider = document.getElementById('bg-opacity-slider');
+    const bgOpacityVal = document.getElementById('bg-opacity-val');
+    const auroraBg = document.querySelector('.aurora-bg');
     const saveBtn = document.getElementById('save-btn');
     const resetBtn = document.getElementById('reset-btn');
     const draggedWordEl = document.getElementById('dragged-word');
@@ -91,7 +92,10 @@ window.onload = function() {
       shadowBlur: 1,
       speed: 0.04,
       depth: 0.8,
-      color: '#4B8BCC'
+      color: '#4B8BCC',
+      outlineColor: '#5C9CDD',
+      bgPreset: 'aurora',
+      bgOpacity: 100
     };
 
     // Переключение видимости панели по Ctrl+L / Cmd+L
@@ -124,13 +128,23 @@ window.onload = function() {
       const maxSpeed = parseFloat(speedSlider ? speedSlider.value : 0.04);
       const depth = parseFloat(depthSlider ? depthSlider.value : 0.8);
       const color = colorPicker.value;
+      const outlineColor = outlineColorPicker ? outlineColorPicker.value : '#5C9CDD';
+      const bgPreset = bgPresetSelect ? bgPresetSelect.value : 'aurora';
+      const bgOpacity = bgOpacitySlider ? parseInt(bgOpacitySlider.value) : 100;
 
       if (shadowVal) shadowVal.innerText = shadowBlur + 'px';
       if (sizeVal) sizeVal.innerText = fontSizePx + 'px';
       if (speedVal) speedVal.innerText = maxSpeed.toFixed(2);
       if (depthVal) depthVal.innerText = depth.toFixed(1);
+      if (bgOpacityVal) bgOpacityVal.innerText = bgOpacity + '%';
 
-      // 1. Стилизуем вытянутое слово
+      // 1. Применяем настройки фона
+      if (auroraBg) {
+        auroraBg.className = 'aurora-bg preset-' + bgPreset;
+        auroraBg.style.opacity = (bgOpacity / 100).toString();
+      }
+
+      // 2. Стилизуем вытянутое слово
       if (draggedWordEl) {
         draggedWordEl.style.fontFamily = `"${font}", sans-serif`;
         draggedWordEl.style.fontStyle = isItalic ? 'italic' : 'normal';
@@ -140,7 +154,7 @@ window.onload = function() {
         draggedWordEl.style.textShadow = shadowBlur > 0 ? `0 1px ${shadowBlur * 0.8}px ${color}` : 'none';
       }
 
-      // 2. Обновляем стили <a> в списках HTML #tags
+      // 3. Обновляем стили <a> в списках HTML #tags
       const aElements = ul.querySelectorAll('a');
       aElements.forEach(a => {
         const original = a.getAttribute('data-original') || a.innerText;
@@ -151,11 +165,12 @@ window.onload = function() {
         a.style.fontWeight = isBold ? 'bold' : 'normal';
       });
 
-      // 3. Перерисовываем TagCanvas
+      // 4. Перерисовываем TagCanvas
       if (TagCanvas.tc && TagCanvas.tc['myCanvas']) {
         const tc = TagCanvas.tc['myCanvas'];
         tc.textFont = `"${font}", sans-serif`;
         tc.textColour = color;
+        tc.outlineColour = outlineColor;
         tc.shadowBlur = Math.round(shadowBlur * 0.5);
         tc.shadowOffset = [0.5, 0.5];
         tc.shadow = shadowBlur > 0 ? color : null;
@@ -177,7 +192,10 @@ window.onload = function() {
         shadowBlur: shadowSlider.value,
         speed: speedSlider ? speedSlider.value : 0.04,
         depth: depthSlider ? depthSlider.value : 0.8,
-        color: colorPicker.value
+        color: colorPicker.value,
+        outlineColor: outlineColorPicker ? outlineColorPicker.value : '#5C9CDD',
+        bgPreset: bgPresetSelect ? bgPresetSelect.value : 'aurora',
+        bgOpacity: bgOpacitySlider ? bgOpacitySlider.value : 100
       };
       localStorage.setItem('cloudSettings', JSON.stringify(settings));
       if (saveBtn) {
@@ -198,6 +216,9 @@ window.onload = function() {
       if (speedSlider) speedSlider.value = DEFAULT_SETTINGS.speed;
       if (depthSlider) depthSlider.value = DEFAULT_SETTINGS.depth;
       colorPicker.value = DEFAULT_SETTINGS.color;
+      if (outlineColorPicker) outlineColorPicker.value = DEFAULT_SETTINGS.outlineColor;
+      if (bgPresetSelect) bgPresetSelect.value = DEFAULT_SETTINGS.bgPreset;
+      if (bgOpacitySlider) bgOpacitySlider.value = DEFAULT_SETTINGS.bgOpacity;
       applySettings();
       if (resetBtn) {
         const oldText = resetBtn.innerText;
@@ -220,6 +241,9 @@ window.onload = function() {
           if (s.speed !== undefined && speedSlider) speedSlider.value = s.speed;
           if (s.depth !== undefined && depthSlider) depthSlider.value = s.depth;
           if (s.color) colorPicker.value = s.color;
+          if (s.outlineColor && outlineColorPicker) outlineColorPicker.value = s.outlineColor;
+          if (s.bgPreset && bgPresetSelect) bgPresetSelect.value = s.bgPreset;
+          if (s.bgOpacity !== undefined && bgOpacitySlider) bgOpacitySlider.value = s.bgOpacity;
         } catch(e) {}
       }
       applySettings();
@@ -234,6 +258,9 @@ window.onload = function() {
     if (speedSlider) speedSlider.addEventListener('input', debouncedApplySettings);
     if (depthSlider) depthSlider.addEventListener('input', debouncedApplySettings);
     if (colorPicker) colorPicker.addEventListener('input', debouncedApplySettings);
+    if (outlineColorPicker) outlineColorPicker.addEventListener('input', debouncedApplySettings);
+    if (bgPresetSelect) bgPresetSelect.addEventListener('change', debouncedApplySettings);
+    if (bgOpacitySlider) bgOpacitySlider.addEventListener('input', debouncedApplySettings);
     if (saveBtn) saveBtn.addEventListener('click', saveSettings);
     if (resetBtn) resetBtn.addEventListener('click', resetSettings);
 

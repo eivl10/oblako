@@ -21,17 +21,39 @@ body {
   position: relative;
 }
 
-/* Мягкие "гугловские" градиенты на фоне */
 .aurora-bg {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: -1;
+  transition: opacity 0.3s ease, background 0.5s ease;
+}
+
+/* Пресет: Аврора (по умолчанию) */
+.aurora-bg.preset-aurora, .aurora-bg:not([class*="preset-"]) {
   background-image: 
     radial-gradient(circle at 0% 0%, rgba(66, 133, 244, 0.35) 0%, transparent 45%),
     radial-gradient(circle at 100% 0%, rgba(234, 67, 53, 0.30) 0%, transparent 45%),
     radial-gradient(circle at 100% 100%, rgba(251, 188, 5, 0.30) 0%, transparent 45%),
     radial-gradient(circle at 0% 100%, rgba(52, 168, 83, 0.35) 0%, transparent 45%);
   animation: drift 25s infinite alternate ease-in-out;
+}
+
+/* Пресет: Тёмный космос */
+.aurora-bg.preset-dark {
+  background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+  animation: none;
+}
+
+/* Пресет: Закат */
+.aurora-bg.preset-sunset {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a1c4fd 100%);
+  animation: none;
+}
+
+/* Пресет: Минимализм */
+.aurora-bg.preset-minimal {
+  background: #f8fafc;
+  animation: none;
 }
 
 @keyframes drift {
